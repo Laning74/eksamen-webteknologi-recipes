@@ -48,6 +48,8 @@ app.get("/drop", (res) => {
 });
 
 // FT01 - List Recipes:
+// This is marked out because I use the same endpoint on FT05
+
 // app.get("/recipes", (req, res) => {
 //   let recipes = [];
 
@@ -323,7 +325,9 @@ app.get("/recipes", (req, res) => {
       req.cookies.user_type === "admin"
     ) {
       db.each(`SELECT name, categories FROM ${recipesTable}`, (err, row) => {
-        recipesName.push(row);
+        if (err) {
+          res.status(404).json({ Error: "An error occured" });
+        } else recipesName.push(row);
       }),
         db.each(
           `SELECT ${ingredientsTable}.entry, ${ingredientsTable}.type FROM ${ingredientsTable} INNER JOIN ${recipesTable} ON ${recipesTable}.recipe_id = ${ingredientsTable}.recipe_id`,
